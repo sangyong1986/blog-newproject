@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- 히어로 섹션 -->
+<section class="hero">
+  <div class="hero-img-wrap">
+    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80" alt="인테리어" class="hero-img" />
+    <div class="hero-overlay">
+      <p class="hero-eyebrow">INTERIOR LIFESTYLE</p>
+      <h2 class="hero-headline">작은 집,<br>크게 살기</h2>
+      <a href="#posts" class="hero-cta">포스트 보기 ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- 카테고리 필터 -->
+<div class="filter-bar" id="posts">
+  <a href="/" class="filter-chip {% if not active_category %}active{% endif %}">전체</a>
+  <a href="/category/INTERIOR" class="filter-chip {% if active_category == 'INTERIOR' %}active{% endif %}">INTERIOR</a>
+  <a href="/category/DAILY" class="filter-chip {% if active_category == 'DAILY' %}active{% endif %}">DAILY</a>
+  <a href="/category/ETC" class="filter-chip {% if active_category == 'ETC' %}active{% endif %}">ETC</a>
+</div>
+
+<!-- 포스트 그리드 -->
+<section class="post-grid">
+  {% for post in posts %}
+  <article class="post-card">
+    <a href="/post/{{ post.id }}" class="card-link">
+      <div class="card-img-wrap">
+        <img src="{{ post.image }}" alt="{{ post.title }}" class="card-img" loading="lazy" />
+        <span class="card-category">{{ post.category }}</span>
+      </div>
+      <div class="card-body">
+        <span class="card-tag">· {{ post.tag }}</span>
+        <h3 class="card-title">{{ post.title }}</h3>
+        <p class="card-summary">{{ post.summary }}</p>
+        <span class="card-date">{{ post.date }}</span>
+      </div>
+    </a>
+  </article>
+  {% else %}
+  <p class="empty-msg">아직 포스트가 없어요.</p>
+  {% endfor %}
+</section>
+
+{% endblock %}

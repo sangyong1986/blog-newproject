@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>집 꾸미기 홀릭</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="blog-title-wrap">
+        <h1 class="blog-title">집 꾸미기 홀릭</h1>
+        <p class="blog-sub">승승의 집꾸미기 이야기</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <span class="nav-label">INTERIOR</span>
+          <ul>
+            <li><a href="/category/INTERIOR">· 홈인테리어</a></li>
+            <li><a href="/category/INTERIOR">· 룸/DIY</a></li>
+            <li><a href="/category/INTERIOR">· 인테리어 아이템</a></li>
+            <li><a href="/category/INTERIOR">· 인테리어 참고자료</a></li>
+          </ul>
+        </div>
+        <div class="nav-section">
+          <span class="nav-label">DAILY</span>
+          <ul>
+            <li><a href="/category/DAILY">· 일상</a></li>
+          </ul>
+        </div>
+        <div class="nav-section">
+          <span class="nav-label">ETC</span>
+          <ul>
+            <li><a href="/category/ETC">· 생활정보/리뷰</a></li>
+            <li><a href="/category/ETC">· 승승이벤트</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sidebar-links">
+        <a href="#" class="sidebar-btn">📷 INSTAGRAM</a>
+        <a href="#" class="sidebar-btn">✉️ E-MAIL</a>
+        <a href="#" class="sidebar-btn">+ FOLLOW</a>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
+    <header class="top-bar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <a href="/" class="top-logo">집 꾸미기 홀릭</a>
+    </header>
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
