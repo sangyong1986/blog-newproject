@@ -6,19 +6,128 @@
   <title>집 꾸미기 홀릭</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <style>
+    :root {
+      --bg: #f9f8f6;
+      --white: #ffffff;
+      --text: #2c2c2c;
+      --text-light: #888;
+      --border: #e8e4de;
+      --accent: #3d3d3d;
+      --sidebar-w: 260px;
+      --font-serif: 'Noto Serif KR', serif;
+      --font-sans: 'Noto Sans KR', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; width: 100%; }
+    ul { list-style: none; }
+
+    /* 사이드바 */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-inner { padding: 48px 28px 40px; display: flex; flex-direction: column; gap: 36px; min-height: 100vh; }
+    .blog-title { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.4; }
+    .blog-sub { font-size: 0.72rem; color: var(--text-light); margin-top: 6px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 24px; }
+    .nav-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; color: var(--text-light); display: block; margin-bottom: 10px; }
+    .sidebar-nav ul { display: flex; flex-direction: column; gap: 7px; }
+    .sidebar-nav li a { font-size: 0.82rem; color: var(--text); line-height: 1.5; transition: color 0.2s; }
+    .sidebar-nav li a:hover { color: #000; }
+    .sidebar-links { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+    .sidebar-btn { display: block; padding: 10px 14px; background: var(--accent); color: #fff; font-size: 0.75rem; letter-spacing: 0.06em; text-align: center; border-radius: 3px; transition: opacity 0.2s; }
+    .sidebar-btn:hover { opacity: 0.8; }
+
+    /* 메인 */
+    .main-content { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+    .top-bar { display: none; align-items: center; gap: 16px; padding: 16px 20px; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+    .top-logo { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; }
+    .menu-toggle { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text); }
+
+    /* 히어로 */
+    .hero { width: 100%; }
+    .hero-img-wrap { position: relative; height: 520px; overflow: hidden; }
+    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .hero-img-wrap:hover .hero-img { transform: scale(1.03); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.05) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 48px 52px; }
+    .hero-eyebrow { font-size: 0.7rem; letter-spacing: 0.16em; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+    .hero-headline { font-family: var(--font-serif); font-size: 2.6rem; font-weight: 600; color: #fff; line-height: 1.25; margin-bottom: 24px; }
+    .hero-cta { display: inline-block; color: #fff; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.5); padding-bottom: 3px; }
+
+    /* 필터 */
+    .filter-bar { display: flex; gap: 8px; padding: 24px 40px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .filter-chip { padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px; font-size: 0.75rem; color: var(--text-light); transition: all 0.2s; }
+    .filter-chip:hover, .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* 포스트 그리드 */
+    .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px; padding: 40px; }
+    .post-card { background: var(--white); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .post-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .card-link { display: block; }
+    .card-img-wrap { position: relative; height: 200px; overflow: hidden; }
+    .card-img { height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .post-card:hover .card-img { transform: scale(1.05); }
+    .card-category { position: absolute; top: 14px; left: 14px; background: rgba(0,0,0,0.55); color: #fff; font-size: 0.65rem; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; }
+    .card-body { padding: 20px 22px 24px; }
+    .card-tag { font-size: 0.72rem; color: var(--text-light); }
+    .card-title { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; margin: 8px 0 10px; line-height: 1.5; color: var(--text); }
+    .card-summary { font-size: 0.8rem; color: var(--text-light); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-date { display: block; margin-top: 14px; font-size: 0.7rem; color: #bbb; }
+    .empty-msg { grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 60px 0; font-size: 0.9rem; }
+
+    /* 포스트 상세 */
+    .post-detail { padding-bottom: 80px; }
+    .post-hero { height: 420px; overflow: hidden; }
+    .post-hero-img { height: 100%; object-fit: cover; }
+    .post-content-wrap { max-width: 680px; margin: 0 auto; padding: 48px 32px 0; }
+    .post-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+    .post-cat { font-size: 0.65rem; letter-spacing: 0.12em; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 2px; }
+    .post-tag-label { font-size: 0.75rem; color: var(--text-light); }
+    .post-title { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600; line-height: 1.4; margin-bottom: 10px; }
+    .post-date { font-size: 0.75rem; color: #bbb; margin-bottom: 28px; }
+    .post-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 32px; }
+    .post-body { font-size: 0.92rem; line-height: 2; color: #444; display: flex; flex-direction: column; gap: 20px; }
+    .back-btn { display: inline-block; margin-top: 48px; font-size: 0.8rem; color: var(--text-light); border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+    .back-btn:hover { color: var(--text); }
+
+    /* 모바일 */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 90; }
+    .sidebar-overlay.show { display: block; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+      .main-content { margin-left: 0; }
+      .top-bar { display: flex; }
+      .hero-img-wrap { height: 320px; }
+      .hero-overlay { padding: 32px 28px; }
+      .hero-headline { font-size: 1.9rem; }
+      .post-grid { padding: 24px 20px; gap: 20px; grid-template-columns: 1fr; }
+      .filter-bar { padding: 16px 20px; }
+      .post-content-wrap { padding: 32px 20px 0; }
+      .post-title { font-size: 1.4rem; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- 사이드바 -->
   <aside class="sidebar">
     <div class="sidebar-inner">
-
       <div class="blog-title-wrap">
         <h1 class="blog-title">집 꾸미기 홀릭</h1>
         <p class="blog-sub">승승의 집꾸미기 이야기</p>
       </div>
-
       <nav class="sidebar-nav">
         <div class="nav-section">
           <span class="nav-label">INTERIOR</span>
@@ -43,26 +152,57 @@
           </ul>
         </div>
       </nav>
-
       <div class="sidebar-links">
         <a href="#" class="sidebar-btn">📷 INSTAGRAM</a>
         <a href="#" class="sidebar-btn">✉️ E-MAIL</a>
         <a href="#" class="sidebar-btn">+ FOLLOW</a>
       </div>
-
     </div>
   </aside>
 
-  <!-- 메인 콘텐츠 -->
   <main class="main-content">
     <header class="top-bar">
       <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
       <a href="/" class="top-logo">집 꾸미기 홀릭</a>
     </header>
-
     {% block content %}{% endblock %}
   </main>
 
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      let overlay = document.querySelector('.sidebar-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+        });
+      }
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    // 카드 페이드인
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.post-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(card);
+      });
+    });
+  </script>
 </body>
 </html>
