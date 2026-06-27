@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<!-- 히어로 섹션 -->
 <section class="hero">
   <div class="hero-img-wrap">
     <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80" alt="인테리어" class="hero-img" />
@@ -14,7 +12,6 @@
   </div>
 </section>
 
-<!-- 카테고리 필터 -->
 <div class="filter-bar" id="posts">
   <a href="/" class="filter-chip {% if not active_category %}active{% endif %}">전체</a>
   <a href="/category/INTERIOR" class="filter-chip {% if active_category == 'INTERIOR' %}active{% endif %}">INTERIOR</a>
@@ -22,7 +19,6 @@
   <a href="/category/ETC" class="filter-chip {% if active_category == 'ETC' %}active{% endif %}">ETC</a>
 </div>
 
-<!-- 포스트 그리드 -->
 <section class="post-grid">
   {% for post in posts %}
   <article class="post-card">
